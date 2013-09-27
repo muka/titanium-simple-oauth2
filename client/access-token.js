@@ -3,8 +3,8 @@
 //
 module.exports = function(config) {
 
-  var core  = require('simple-oauth2/core')(config);
-  require('simple-oauth2/lib/date-utils');
+  var core  = require('titanium-simple-oauth2/core')(config);
+  require('titanium-simple-oauth2/lib/date-utils');
 
   //
   // ### Creates an OAuth2.AccessToken instance.
@@ -45,5 +45,5 @@ module.exports = function(config) {
     'token'  : this.token,
     'expired': expired,
     'refresh': refresh
-  }
+  };
 };

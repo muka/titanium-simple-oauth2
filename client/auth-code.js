@@ -3,8 +3,8 @@
 //
 module.exports = function(config) {
 
-  var core   = require('simple-oauth2/core')(config),
-	    qs   = require('simple-oauth2/lib/querystring');
+  var core   = require('titanium-simple-oauth2/core')(config),
+	    qs   = require('titanium-simple-oauth2/lib/querystring');
 
 	// ### Redirect the user to the authorization page
 	//
@@ -38,5 +38,5 @@ module.exports = function(config) {
   return {
     'authorizeURL' : authorizeURL,
     'getToken' : getToken
-  }
+  };
 };
