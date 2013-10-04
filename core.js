@@ -15,6 +15,7 @@ module.exports = function(config) {
             Ti.API.debug('OAuth2 Node Request');
         }
         
+        // tishadow hack
         var url = config.site + (path.substr(0,1) === '/' ? path : '/'+ path);
 
         call(method, url, params, function(error, response, body) {
@@ -48,7 +49,7 @@ module.exports = function(config) {
             options.qs = params;
 
         // Enable the system to send authorization params in the body (for example github does not require to be in the header)
-        if (method != 'GET' && options.form && !params.password) {
+        if (method != 'GET' && options.form && (!params.password || params.useCredentials)) {
             options.form.client_id = config.clientID;
             options.form[config.clientSecretParameterName] = config.clientSecret;
         }
