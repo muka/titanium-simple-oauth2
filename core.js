@@ -1,7 +1,6 @@
 module.exports = function(config) {
 
     var request = require('titanium-simple-oauth2/lib/request');
-
     var errors = require("titanium-simple-oauth2/error")();
 
     // High level method to call API

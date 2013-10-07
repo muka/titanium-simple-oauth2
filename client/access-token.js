@@ -4,7 +4,7 @@
 module.exports = function(config) {
 
   var core  = require('titanium-simple-oauth2/core')(config);
-  require('titanium-simple-oauth2/lib/date-utils');
+  //require('titanium-simple-oauth2/lib/date-utils');
 
   //
   // ### Creates an OAuth2.AccessToken instance.
@@ -13,7 +13,7 @@ module.exports = function(config) {
   //
   function create(token) {
     this.token = token;
-    this.token.expires_at = (new Date).addSeconds(token.expires_in);
+    this.token.expires_at = (new Date).getTime() + (token.expires_in * 1000);
     return this;
   }
 
@@ -21,7 +21,7 @@ module.exports = function(config) {
   // ### Check if the access token is expired or not.
   //
   function expired() {
-    return (Date.compare(this.token.expires_at, new Date) == -1) ? true : false;
+    return (new Date >= this.token.expires_at ) ? true : false;
   }
 
   //
