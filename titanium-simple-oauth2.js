@@ -1,6 +1,6 @@
 module.exports = function(config) {
-    
-    var appConfig = require('titanium-simple-oauth2/config');
+
+    var appConfig = require('./config');
 
     function configure(config) {
         config = config || {};
@@ -9,7 +9,7 @@ module.exports = function(config) {
     }
 
     config = configure(config);
-    var core = require('titanium-simple-oauth2/core')(config);
+    var core = require('./core')(config);
 
     function mergeDefaults(o1, o2) {
         for (var p in o2) {
@@ -27,9 +27,9 @@ module.exports = function(config) {
     }
 
     return {
-        'AuthCode' : require('titanium-simple-oauth2/client/auth-code')(config),
-        'Password' : require('titanium-simple-oauth2/client/password')(config),
-        'Client' : require('titanium-simple-oauth2/client/client')(config),
-        'AccessToken' : require('titanium-simple-oauth2/client/access-token')(config)
+        'AuthCode' : require('./client/auth-code')(config),
+        'Password' : require('./client/password')(config),
+        'Client' : require('./client/client')(config),
+        'AccessToken' : require('./client/access-token')(config)
     };
 };

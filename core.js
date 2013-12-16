@@ -1,7 +1,7 @@
 module.exports = function(config) {
 
-    var request = require('titanium-simple-oauth2/lib/request');
-    var errors = require("titanium-simple-oauth2/error")();
+    var request = require('./lib/request');
+    var errors = require("./error")();
 
     // High level method to call API
     function api(method, path, params, callback) {
@@ -9,11 +9,11 @@ module.exports = function(config) {
         if (!callback || typeof (callback) !== 'function') {
             throw new Error('Callback not provided on API call');
         }
-        
+
         if(config.debug) {
             Ti.API.debug('OAuth2 Node Request');
         }
-        
+
         // tishadow hack
         var url = config.site + (path.substr(0,1) === '/' ? path : '/'+ path);
 
@@ -52,7 +52,7 @@ module.exports = function(config) {
             options.form.client_id = config.clientID;
             options.form[config.clientSecretParameterName] = config.clientSecret;
         }
-        
+
         if(config.debug) {
             Ti.API.debug('Simple OAuth2: Making the HTTP request');
             console.log(options);
@@ -63,16 +63,20 @@ module.exports = function(config) {
 
     // Extract the data from the request response
     function data(error, response, body, callback) {
-        
+
         if (error) {
+
             var estr = 'Simple OAuth2: something went wrong during the request';
             Ti.API.error(estr);
-            if(error) {
+            if(error && config.debug) {
                 console.log(error);
             }
-            throw new Error(estr);
+
+            callback(error, response, body);
+            return false;
+            // throw new Error(estr);
         }
-        
+
         if(config.debug) {
             Ti.API.debug('Simple OAuth2: checking response body');
             console.log(body);
@@ -87,7 +91,7 @@ module.exports = function(config) {
         if (response.statusCode >= 400) {
             return callback(new errors.HTTPError(response.statusCode), null);
         }
-        
+
         callback(error, body);
     };
 

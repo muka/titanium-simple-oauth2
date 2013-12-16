@@ -3,7 +3,7 @@
 //
 module.exports = function(config) {
 
-  var core   = require('titanium-simple-oauth2/core')(config);
+  var core   = require('../core')(config);
 
   //
   // ### Returns the Access Token object.
