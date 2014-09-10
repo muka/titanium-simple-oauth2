@@ -1,4 +1,11 @@
+var DEBUG = true;
+DEBUG = false;
+
+var d = function(m) { DEBUG && console.debug(m) };
+
 module.exports = function(config) {
+
+    DEBUG = config.debug || DEBUG;
 
     var request = require('./lib/request');
     var errors = require("./error")();
@@ -8,10 +15,6 @@ module.exports = function(config) {
 
         if (!callback || typeof (callback) !== 'function') {
             throw new Error('Callback not provided on API call');
-        }
-
-        if(config.debug) {
-            Ti.API.debug('OAuth2 Node Request');
         }
 
         // tishadow hack
@@ -42,21 +45,20 @@ module.exports = function(config) {
 
         if (isEmpty(params))
             params = null;
-        if (method != 'GET')
+        if (method !== 'GET')
             options.form = params;
-        if (method == 'GET')
+        if (method === 'GET')
             options.qs = params;
 
         // Enable the system to send authorization params in the body (for example github does not require to be in the header)
-        if (method != 'GET' && options.form && (!params.password || params.useCredentials)) {
+        if (method !== 'GET' && options.form && (!params.password || params.useCredentials)) {
             options.form.client_id = config.clientID;
             options.form[config.clientSecretParameterName] = config.clientSecret;
         }
 
-        if(config.debug) {
-            Ti.API.debug('Simple OAuth2: Making the HTTP request');
-            console.log(options);
-        }
+        d('OAuth2: Sending request');
+        d( method + ' ' + url);
+        d(params);
 
         request(options, callback);
     };
@@ -66,27 +68,23 @@ module.exports = function(config) {
 
         if (error) {
 
-            var estr = 'Simple OAuth2: something went wrong during the request';
-            Ti.API.error(estr);
-            if(error && config.debug) {
-                console.log(error);
-            }
+            d('OAuth2 request error')
+            d(error);
 
             callback(error, response, body);
             return false;
             // throw new Error(estr);
         }
 
-        if(config.debug) {
-            Ti.API.debug('Simple OAuth2: checking response body');
-            console.log(body);
-        }
-
         try {
             body = JSON.parse(body);
         } catch(e) {
             /* The OAuth2 server does not return a valid JSON'); */
+            console.error("Cannot parse auth response!");
         }
+
+        d('OAuth2: checking response');
+        d(body);
 
         if (response.statusCode >= 400) {
             return callback(new errors.HTTPError(response.statusCode), null);
@@ -96,10 +94,7 @@ module.exports = function(config) {
     };
 
     function isEmpty(ob) {
-        for (var i in ob) {
-            return false;
-        }
-        return true;
+        return !ob || !Object.keys(ob).length;
     };
 
     return {
